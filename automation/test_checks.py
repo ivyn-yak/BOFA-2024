@@ -14,10 +14,7 @@ def processChecks(instrument_dict, client_dict, order_dict):
 
         # check 1 - invalid instrument
         if instrument not in instrument_dict.keys():
-            rejected_orders.append({
-                "order": order,
-                "reason": "REJECTED - INSTRUMENT NOT FOUND"
-            })
+            rejected_orders.append([str(order.order_id), "REJECTED - INSTRUMENT NOT FOUND"])
             break
 
         instrumentObj = instrument_dict[instrument]
@@ -27,10 +24,9 @@ def processChecks(instrument_dict, client_dict, order_dict):
         curr = instrumentObj.currency
 
         if curr not in currencies:
-            rejected_orders.append({
-                "order": order,
-                "reason": "REJECTED - MISMATCH CURRENCY"
-            })
+            rejected_orders.append(
+                [str(order.order_id), "REJECTED - MISMATCH CURRENCY"]
+            )
             break
         
         #check 3 - invalid lot size 
@@ -38,10 +34,9 @@ def processChecks(instrument_dict, client_dict, order_dict):
         qty = order.quantity
 
         if qty % lotSize != 0:
-            rejected_orders.append({
-                "order": order,
-                "reason": "REJECTED - INVALID LOT SIZE"
-            })
+            rejected_orders.append(
+                [str(order.order_id), "REJECTED - INVALID LOT SIZE"]
+                )
             break
         
         #check 4 - position size failed
@@ -52,18 +47,15 @@ def processChecks(instrument_dict, client_dict, order_dict):
             position_dict = clientObj.net_position
 
             if instrument not in position_dict.keys():
-                rejected_orders.append({
-                    "order": order,
-                    "reason": "REJECTED - POSITION CHECK FAILED"
-                })
+                rejected_orders.append(
+                [str(order.order_id), "REJECTED - POSITION CHECK FAILED"]
+                )
+                
             else:
                 curr_position = position_dict[instrument]
                 quantity = order.quantity
                 if quantity > curr_position:
-                    rejected_orders.append({
-                    "order": order,
-                    "reason": "REJECTED - POSITION CHECK FAILED"
-                })
+                    rejected_orders.append([str(order.order_id), "REJECTED - POSITION CHECK FAILED"])
                     
             break
 
@@ -90,22 +82,9 @@ class CheckTest(unittest.TestCase):
         }
 
         result = processChecks(instrument_dict, client_dict, order_dict)["rejected"]
-        client_id = result[0]["order"].client_id
-        time = result[0]["order"].time
-        instrument_id = result[0]["order"].instrument_id
-        side = result[0]["order"].side
-        price = result[0]["order"].price
-        quantity = result[0]["order"].quantity
-        order_id = result[0]["order"].order_id
-        reason = result[0]["reason"]
+        order_id = result[0][0]
+        reason = result[0][1]
 
-        # print(result, expected)
-        self.assertEqual(client_id, "D")
-        self.assertEqual(time, "09:10:00")
-        self.assertEqual(instrument_id, "SIA")
-        self.assertEqual(side, "Sell")
-        self.assertEqual(price, "Market")
-        self.assertEqual(quantity, 300)
         self.assertEqual(order_id, "D1")
         self.assertEqual(reason, "REJECTED - MISMATCH CURRENCY")
 
@@ -124,23 +103,9 @@ class CheckTest(unittest.TestCase):
         }
 
         result = processChecks(instrument_dict, client_dict, order_dict)["rejected"]
+        order_id = result[0][0]
+        reason = result[0][1]
         
-        client_id = result[0]["order"].client_id
-        time = result[0]["order"].time
-        instrument_id = result[0]["order"].instrument_id
-        side = result[0]["order"].side
-        price = result[0]["order"].price
-        quantity = result[0]["order"].quantity
-        order_id = result[0]["order"].order_id
-        reason = result[0]["reason"]
-
-        # print(result, expected)
-        self.assertEqual(client_id, "B")
-        self.assertEqual(time, "09:29:01")
-        self.assertEqual(instrument_id, "SIA")
-        self.assertEqual(side, "Sell")
-        self.assertEqual(price, 32.1)
-        self.assertEqual(quantity, 5)
         self.assertEqual(order_id, "B2")
         self.assertEqual(reason, "REJECTED - INVALID LOT SIZE")
 
@@ -158,23 +123,9 @@ class CheckTest(unittest.TestCase):
         }
 
         result = processChecks(instrument_dict, client_dict, order_dict)["rejected"]
+        order_id = result[0][0]
+        reason = result[0][1]
         
-        client_id = result[0]["order"].client_id
-        time = result[0]["order"].time
-        instrument_id = result[0]["order"].instrument_id
-        side = result[0]["order"].side
-        price = result[0]["order"].price
-        quantity = result[0]["order"].quantity
-        order_id = result[0]["order"].order_id
-        reason = result[0]["reason"]
-
-        # print(result, expected)
-        self.assertEqual(client_id, "B")
-        self.assertEqual(time, "09:29:01")
-        self.assertEqual(instrument_id, "XXX")
-        self.assertEqual(side, "Sell")
-        self.assertEqual(price, 32.1)
-        self.assertEqual(quantity, 5)
         self.assertEqual(order_id, "B2")
         self.assertEqual(reason, "REJECTED - INSTRUMENT NOT FOUND")
 
@@ -192,23 +143,9 @@ class CheckTest(unittest.TestCase):
         }
 
         result = processChecks(instrument_dict, client_dict, order_dict)["rejected"]
+        order_id = result[0][0]
+        reason = result[0][1]
         
-        client_id = result[0]["order"].client_id
-        time = result[0]["order"].time
-        instrument_id = result[0]["order"].instrument_id
-        side = result[0]["order"].side
-        price = result[0]["order"].price
-        quantity = result[0]["order"].quantity
-        order_id = result[0]["order"].order_id
-        reason = result[0]["reason"]
-
-        # print(result, expected)
-        self.assertEqual(client_id, "B")
-        self.assertEqual(time, "09:29:01")
-        self.assertEqual(instrument_id, "SIA")
-        self.assertEqual(side, "Sell")
-        self.assertEqual(price, 32.1)
-        self.assertEqual(quantity, 1000)
         self.assertEqual(order_id, "B2")
         self.assertEqual(reason, "REJECTED - POSITION CHECK FAILED")
 
