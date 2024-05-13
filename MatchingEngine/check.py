@@ -19,7 +19,6 @@ def processChecks(instrument_dict, client_dict, order_dict):
         instrument = order.instrument_id
 
         clientObj = client_dict[clientId]
-        instrumentObj = instrument_dict[instrument]
 
         # check 1 - invalid instrument
         if instrument not in instrument_dict.keys():
@@ -28,7 +27,9 @@ def processChecks(instrument_dict, client_dict, order_dict):
                 "reason": "REJECTED - INSTRUMENT NOT FOUND"
             })
             break
-        
+
+        instrumentObj = instrument_dict[instrument]
+
         #check 2 - mismatch currency
         currencies = clientObj.currencies
         curr = instrumentObj.currency
@@ -58,7 +59,7 @@ def processChecks(instrument_dict, client_dict, order_dict):
         if side == "Sell" and positionCheck == "Y":
             position_dict = clientObj.net_position
 
-            if instrument not in instrument_dict.keys():
+            if instrument not in position_dict.keys():
                 rejected_orders.append({
                     "order": order,
                     "reason": "REJECTED - POSITION CHECK FAILED"
@@ -76,7 +77,10 @@ def processChecks(instrument_dict, client_dict, order_dict):
 
         order_book.append(order)
 
-    print(rejected_orders, order_book)
+    return {
+        "rejected": rejected_orders,
+        "filtered": order_book
+    }
 
 
 processChecks(instrument_dict, client_dict, order_dict)
