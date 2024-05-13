@@ -82,64 +82,44 @@ class MatchingEngine:
         for price in unique_price:            
 
             if price == float("inf"):
-                print("TESTTTTT")
                 buy_mkt = buy_dict[price]
 
             if price == float("-inf"):
-                print("TESTTTTT")
                 sell_mkt = sell_dict[price]
                 
-
-            
         print(buy_mkt)
 
         buy_order = []
         sell_order = []
 
+        if buy_mkt: # there is buy market -> 
+            for key in sell_dict.keys():
+                sell_order += sell_dict[key]
+
+        if sell_mkt: 
+            for key in buy_dict.keys():
+                buy_order += buy_dict[key]
+
         for price in unique_price:
-            print(price)
+            print("prce", price)
             # if (price in buy_dict.keys() and price in sell_dict.keys()):
+            
+            if not buy_mkt: # there is buy market -> 
+                if price in sell_dict.keys():
+                    sell_order += sell_dict[price]
+                    print("HERE!!!!", sell_dict[price])
 
 
-            if buy_mkt: # there is buy market -> 
-                for key in sell_dict.keys():
-                    sell_order = sell_dict[key]
-            else:
-                sell_order += sell_dict[price]
-
-        
-            if sell_mkt: 
-                for key in buy_dict.keys():
-                    buy_order = buy_dict[key]
-            else:
-                buy_order += buy_dict[price]
+            if not sell_mkt: 
+                if price in buy_dict.keys():
+                    buy_order += buy_dict[price]
+                    print("HERE!!!!", buy_dict[price])
 
             print(buy_order, sell_order, "HERE")
 
-                # if price in buy_dict.keys() and price == float("inf"):
-                #     buy_order += buy_dict[price]
-
-
-                # if price in buy_dict.keys() and price != float("inf"):
-                #     buy_order += buy_dict[price]
-                    
-                # if price in sell_dict.keys() and price == float("-inf"):
-                #     sell_order += sell_dict[price]
-
-                # if price in sell_dict.keys() and price != float("-inf"):
-                #     sell_order += sell_dict[price]
-
-
-
-                # if float("inf") in buy_dict.keys():
-                #     buy_order += buy_dict[float("inf")]
-
-                # if float("-inf") in sell_dict.keys():
-                #     sell_order += sell_dict[float("-inf")]
-
-
             buy_qty = 0
             for order in buy_order:
+                print(order)
                 qty = order[1]
                 buy_qty += qty
 
@@ -148,44 +128,18 @@ class MatchingEngine:
                 qty = order[1]
                 sell_qty += qty
 
-            # print(buy_qty, sell_qty)
-
             matched = min(buy_qty, sell_qty)
             print(matched)
         
-
-            if matched > max_volume:
+            if matched > max_volume and price != float("inf"):
                 max_volume = matched
                 best_price = price
 
 
-            #     buy_volume = buy_cumulative.get(price, 0)
-            #     sell_volume = sell_cumulative.get(price, 0)
-            #     # print("here", price, buy_volume, sell_volume)
-            #     matched_volume = min(buy_volume, sell_volume)
-            #     # print(matched_volume)
-            #     if matched_volume > max_volume:
-            #         max_volume = matched_volume
-            #         best_price = price
-
         return ("result", best_price)
     
     def setup(self):
-        # instrument_dict = {
-        #     "SIA": Instrument(instrument_id="SIA", currency="SGD", lot_size=100)
-        # }
-
-        # client_dict = {
-        #     "B": Client(client_id="B",currencies= ["SGD"], position_check="N", rating=2, net_position={})
-        # }
-
-        # order_dict = {
-        #     "B1": Order(time="09:29:01", client_id="B", instrument_id="SIA", side="Sell", price=32.1, quantity=1000, order_id="B2")
-        # }
-
-        # result = processChecks(instrument_dict, client_dict, order_dict)
-        # filtered = result["filtered"]
-
+        
         filtered = []
 
         # for obj in filtered:
