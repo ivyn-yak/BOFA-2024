@@ -1,4 +1,4 @@
-from datetime import time
+# from datetime import time
 
 class Client:
     def __init__(self, client_id, currencies, position_check, rating):
@@ -14,7 +14,7 @@ class Instrument:
         self.lot_size = lot_size
 
 class Order:
-    def __init__(self, order_id, client_id, instrument_id, side, price, quantity):
+    def __init__(self, time, order_id, client_id, instrument_id, side, price, quantity):
         self.time = time
         self.order_id = order_id
         self.client_id = client_id

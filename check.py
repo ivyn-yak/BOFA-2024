@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 clients = pd.read_csv("./DataSets/example-set/input_clients.csv")
 instruments = pd.read_csv("./DataSets/example-set/input_instruments.csv")
 orders = pd.read_csv("./DataSets/example-set/input_orders.csv")
