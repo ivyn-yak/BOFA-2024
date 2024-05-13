@@ -24,3 +24,4 @@ class Order:
         self.side = side
         self.price = price
         self.quantity = quantity
+
