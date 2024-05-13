@@ -1,11 +1,13 @@
 # from datetime import time
 
 class Client:
-    def __init__(self, client_id, currencies, position_check, rating):
+    def __init__(self, client_id, currencies, position_check, rating, net_position):
         self.client_id = client_id
         self.currencies = currencies
         self.position_check = position_check
         self.rating = rating
+        self.net_position = net_position
+
 
 class Instrument:
     def __init__(self, instrument_id, currency, lot_size):
@@ -22,5 +24,3 @@ class Order:
         self.side = side
         self.price = price
         self.quantity = quantity
-
-

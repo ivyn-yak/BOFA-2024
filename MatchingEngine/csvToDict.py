@@ -14,8 +14,9 @@ def client(clients):
         curr_list = currencies.split(",")
         positionCheck = row["PositionCheck"]
         rating = row["Rating"]
+        netPosition = {}
 
-        client_dict[clientId] = Client(client_id=clientId,currencies= curr_list, position_check=positionCheck, rating=rating)
+        client_dict[clientId] = Client(client_id=clientId,currencies= curr_list, position_check=positionCheck, rating=rating, net_position=netPosition)
 
     return (client_dict) 
 
@@ -48,11 +49,6 @@ def order(orders):
         order_dict[orderId] = Order(time=time, client_id=client, instrument_id=instrument, side=side, price=price, quantity=quantity, order_id=orderId)
 
     return(order_dict) 
-
-
-print(client(clients))
-print(instrument(instruments))
-print(order(orders))
 
 instrument_dict = instrument(instruments)
 client_dict = client(clients)
